@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Breakfast Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f1eb;
+      color: #4b2e1e;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1, h2 {
+      color: #6b4226;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #fff5ea;
+      border: 1px solid #e0c4a8;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin: 8px 0;
+    }
+
+    input[type="text"],
+    input[type="time"],
+    textarea {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      border: 1px solid #d6b08c;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    button {
+      background-color: #8b5c36;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #a2683f;
+    }
+
+    img.logo {
+      display: block;
+      max-width: 150px;
+      margin: 0 auto 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGO -->
+  <img src="https://th.bing.com/th/id/OIP.3TT6o9kRO2f8RAgyFOYETgAAAA?rs=1&pid=ImgDetMain" alt="Hotel Logo" class="logo" />
+
+  <h1>Breakfast Request</h1>
+
+  <!-- ROOM, GUEST NAME AND TIME -->
+  <div class="section">
+    <label>
+      Room Number:
+      <input type="text" id="room" placeholder="e.g., 203" required />
+    </label>
+
+    <label>
+      Guest Name:
+      <input type="text" id="guestName" placeholder="Full name" required />
+    </label>
+
+    <label>
+      Preferred Time (between 8:00 and 10:00):
+      <input type="time" id="time" min="08:00" max="10:00" step="300" required />
+    </label>
+  </div>
+
+  <!-- COLD CUTS -->
+  <div class="section">
+    <h2>Cold Cuts</h2>
+    <label><input type="checkbox" value="Cheese" /> Cheese</label>
+    <label><input type="checkbox" value="Ham" /> Ham</label>
+    <label><input type="checkbox" value="Turkey Breast" /> Turkey Breast</label>
+  </div>
+
+  <!-- HOT ITEMS -->
+  <div class="section">
+    <h2>Hot Items</h2>
+    <label><input type="checkbox" value="Scrambled Eggs" /> Scrambled Eggs</label>
+    <label><input type="checkbox" value="Pão de Queijo" /> Pão de Queijo</label>
+    <label><input type="checkbox" value="Croissant" /> Croissant</label>
+  </div>
+
+  <!-- DRINKS -->
+  <div class="section">
+    <h2>Drinks</h2>
+    <label><input type="checkbox" value="Coffee" /> Coffee</label>
+    <label><input type="checkbox" value="Tea" /> Tea</label>
+    <label><input type="checkbox" value="Orange Juice" /> Orange Juice</label>
+  </div>
+
+  <!-- OBSERVATIONS -->
+  <div class="section">
+    <h2>Observations</h2>
+    <label>
+      <textarea id="observations" placeholder="e.g., More cheese, lactose-free milk..."></textarea>
+    </label>
+  </div>
+
+  <!-- SEND BUTTON -->
+  <button onclick="sendWhatsApp()">Send via WhatsApp</button>
+
+  <script>
+    function sendWhatsApp() {
+      const room = document.getElementById('room').value.trim();
+      const guestName = document.getElementById('guestName').value.trim();
+      const time = document.getElementById('time').value;
+      const obs = document.getElementById('observations').value.trim();
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+      if (!room || !guestName || !time) {
+        alert("Please fill in room number, guest name, and preferred time.");
+        return;
+      }
+
+      // Check if time is between 08:00 and 10:00
+      const [hour, minute] = time.split(":").map(Number);
+      if (hour < 8 || hour > 10 || (hour === 10 && minute > 0)) {
+        alert("Breakfast is only available between 08:00 and 10:00.");
+        return;
+      }
+
+      let items = Array.from(checkboxes).map(cb => cb.value).join(", ");
+      if (!items) items = "No items selected";
+
+      let message = `Hello, I'd like to order breakfast.\nRoom: ${room}\nGuest: ${guestName}\nTime: ${time}\nItems: ${items}`;
+      if (obs) {
+        message += `\nObservations: ${obs}`;
+      }
+
+      const encoded = encodeURIComponent(message);
+      const phone = "5511999999999"; // Substitua pelo seu número real
+      const url = `https://wa.me/${phone}?text=${encoded}`;
+      window.open(url, "_blank");
+    }
+  </script>
+
+</body>
+</html>
